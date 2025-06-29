@@ -73,8 +73,19 @@ fi
 
 # Set up npm completion
 if confirm "Would you like to enable npm command completion?" "y"; then
-    npm completion >> $(get_shell_config)
-    log_success "npm completion enabled"
+    # Capture npm completion output first
+    NPM_COMPLETION=$(npm completion 2>/dev/null)
+    if [[ -n "$NPM_COMPLETION" ]]; then
+        echo "$NPM_COMPLETION" >> $(get_shell_config)
+        log_success "npm completion enabled"
+    else
+        log_warning "Could not generate npm completion"
+    fi
 fi
+
+# Ensure NVM is properly loaded for subsequent scripts
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 log_success "Node.js and NVM setup completed!"

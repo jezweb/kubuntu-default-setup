@@ -8,6 +8,14 @@ source "$SCRIPT_DIR/../utils.sh"
 
 log_info "Starting frontend frameworks setup..."
 
+# Ensure NVM is loaded if available
+if [[ -s "$HOME/.nvm/nvm.sh" ]] && ! command_exists npm; then
+    log_info "Loading NVM environment..."
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+fi
+
 # Ensure npm is available
 if ! command_exists npm; then
     log_error "npm is not installed. Please run the NVM/Node.js setup script first."
