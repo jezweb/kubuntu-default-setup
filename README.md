@@ -18,6 +18,7 @@ This repository contains automated setup scripts to install and configure all th
 - **Node.js 22**: Latest LTS version
 - **Package managers**: npm, yarn, pnpm
 - **Global tools**: TypeScript, ESLint, Prettier, nodemon, PM2, and more
+- **Frontend frameworks**: Tailwind CSS, Vuetify, Material-UI scaffolding tools
 
 ### Python Ecosystem
 - **Python 3**: With pip and venv support
@@ -41,7 +42,11 @@ This repository contains automated setup scripts to install and configure all th
 - **Gemini CLI**: Google's AI CLI tool
 - **Ollama**: Run LLMs locally
 - **MCP Servers**: Model Context Protocol servers
+  - `mcp-server-time`: Time and date information server
+  - `mcp-server-filesystem`: File system access server
+  - `mcp-server-git`: Git repository operations server
 - **Vector databases**: Chroma, LanceDB setup scripts
+- **AI CLI tools**: LangChain, Hugging Face CLI, OpenAI tools
 
 ## Quick Start
 
@@ -93,6 +98,10 @@ kubuntu-default-setup/
 │   ├── utils.sh           # Shared utility functions
 │   ├── system/            # System essentials
 │   ├── nodejs/            # Node.js ecosystem
+│   │   ├── 01-nvm-node.sh
+│   │   ├── 02-package-managers.sh
+│   │   ├── 03-global-tools.sh
+│   │   └── 04-frontend-frameworks.sh
 │   ├── python/            # Python ecosystem
 │   ├── dev-tools/         # Development tools
 │   ├── cloud-services/    # Cloud and database tools
@@ -131,6 +140,9 @@ The installation creates several helper scripts:
 - `~/create-python-project.sh`: Create Python projects with virtual environments
 - `~/setup-lancedb-project.sh`: Set up LanceDB vector database projects
 - `~/docker-databases/*.sh`: Quick database container setup scripts
+- `~/create-vuetify-project.sh`: Create Vue.js projects with Vuetify 3
+- `~/create-tailwind-project.sh`: Create projects with Tailwind CSS
+- `~/create-mui-project.sh`: Create React projects with Material-UI
 
 ## Customization
 

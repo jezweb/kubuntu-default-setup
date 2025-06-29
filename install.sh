@@ -60,6 +60,7 @@ full_installation() {
         "$SCRIPT_DIR/scripts/nodejs/01-nvm-node.sh"
         "$SCRIPT_DIR/scripts/nodejs/02-package-managers.sh"
         "$SCRIPT_DIR/scripts/nodejs/03-global-tools.sh"
+        "$SCRIPT_DIR/scripts/nodejs/04-frontend-frameworks.sh"
         "$SCRIPT_DIR/scripts/python/01-python-pip.sh"
         "$SCRIPT_DIR/scripts/python/02-python-tools.sh"
         "$SCRIPT_DIR/scripts/dev-tools/01-vscode.sh"
@@ -107,6 +108,7 @@ category_installation() {
             run_script "$SCRIPT_DIR/scripts/nodejs/01-nvm-node.sh"
             run_script "$SCRIPT_DIR/scripts/nodejs/02-package-managers.sh"
             run_script "$SCRIPT_DIR/scripts/nodejs/03-global-tools.sh"
+            run_script "$SCRIPT_DIR/scripts/nodejs/04-frontend-frameworks.sh"
             ;;
         3)
             run_script "$SCRIPT_DIR/scripts/python/01-python-pip.sh"
