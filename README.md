@@ -69,6 +69,40 @@ cd kubuntu-default-setup
    - **Full Installation** (recommended for new setups)
    - **Select Categories** (for partial installation)
 
+## Web-Based GUI Installer (NEW!)
+
+A modern web interface is now available for managing installations:
+
+### Starting the GUI
+
+```bash
+# Quick start (installs dependencies and starts server)
+./scripts/start-gui.sh setup
+
+# Or navigate to the GUI directory
+cd gui
+./scripts/setup-gui.sh setup
+```
+
+The GUI will be available at: **http://localhost:7842**
+
+### GUI Features
+
+- **Visual Installation Wizard**: Select tools with checkboxes and see real-time progress
+- **Pre-configured Tool Sets**: One-click installation for common developer profiles
+- **System Monitoring**: View active ports, running services, and system resources
+- **Service Management**: Start/stop Docker containers and other services
+- **Port Monitor**: Track what's using which ports with conflict detection
+- **Real-time Updates**: WebSocket-based live installation progress and system status
+
+### Development Mode
+
+For GUI development with hot-reload:
+```bash
+cd gui
+npm run dev
+```
+
 ## Installation Options
 
 ### Full Installation
@@ -100,6 +134,7 @@ kubuntu-default-setup/
 ├── install.sh                    # Main installer script
 ├── scripts/
 │   ├── utils.sh                 # Shared utility functions
+│   ├── start-gui.sh             # Quick start for web GUI
 │   ├── system/                  # System essentials
 │   ├── nodejs/                  # Node.js ecosystem
 │   │   ├── 01-nvm-node.sh
@@ -113,8 +148,13 @@ kubuntu-default-setup/
 │       ├── 01-ai-tools.sh
 │       ├── 02-mcp-servers.sh    # Comprehensive MCP installer
 │       └── mcp-server-manager.sh
+├── gui/                         # Web-based GUI installer
+│   ├── backend/                 # Express.js server
+│   ├── frontend/                # Vue.js/Vuetify app (to be created)
+│   └── scripts/setup-gui.sh     # GUI setup script
 ├── docs/
-│   └── MCP_SERVERS.md           # Detailed MCP server guide
+│   ├── MCP_SERVERS.md           # Detailed MCP server guide
+│   └── GUI_INSTALLER_PLAN.md    # GUI architecture documentation
 ```
 
 ## Post-Installation
