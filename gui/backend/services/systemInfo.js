@@ -95,11 +95,11 @@ async function getActivePorts() {
 function updatePortHistory(ports) {
   try {
     // Mark old ports as inactive
-    queries.deactivateOldPorts.run();
+    queries.deactivateOldPorts();
     
     // Update or insert current ports
     for (const port of ports) {
-      queries.recordPort.run(
+      queries.recordPort(
         port.port,
         port.process || 'Unknown',
         port.process,

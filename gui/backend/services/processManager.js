@@ -23,7 +23,7 @@ async function getRunningServices() {
     
     // Update database
     for (const service of services) {
-      queries.upsertService.run(
+      queries.upsertService(
         service.name,
         service.displayName,
         service.type,

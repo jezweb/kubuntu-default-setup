@@ -20,12 +20,18 @@ const db = new Database(DB_PATH, {
 // Enable foreign keys
 db.pragma('foreign_keys = ON');
 
+// Prepared statements (will be initialized after database)
+let statements = {};
+
 // Initialize database with schema
 async function initDatabase() {
   try {
     const schema = fs.readFileSync(SCHEMA_PATH, 'utf8');
     db.exec(schema);
     console.log('Database schema initialized');
+    
+    // Initialize prepared statements after schema is created
+    initializeStatements();
     
     // Load tools from existing scripts
     await loadToolsFromScripts();
@@ -35,6 +41,31 @@ async function initDatabase() {
     console.error('Database initialization error:', error);
     throw error;
   }
+}
+
+// Initialize prepared statements
+function initializeStatements() {
+  statements = {
+    // Tools
+    updateToolStatus: db.prepare('UPDATE tools SET installed = ?, install_date = ? WHERE id = ?'),
+    
+    // Installations
+    createInstallation: db.prepare('INSERT INTO installations (tool_id, status) VALUES (?, ?)'),
+    updateInstallation: db.prepare('UPDATE installations SET status = ?, completed_at = ?, log = ?, error_message = ? WHERE id = ?'),
+    
+    // Port history
+    recordPort: db.prepare("INSERT OR REPLACE INTO port_history (port, service, process_name, pid, last_seen, active) VALUES (?, ?, ?, ?, datetime('now'), 1)"),
+    deactivateOldPorts: db.prepare("UPDATE port_history SET active = 0 WHERE last_seen < datetime('now', '-5 minutes')"),
+    
+    // Services
+    upsertService: db.prepare("INSERT OR REPLACE INTO services (name, display_name, type, status, last_check) VALUES (?, ?, ?, ?, datetime('now'))"),
+    
+    // Settings
+    setSetting: db.prepare("INSERT OR REPLACE INTO settings (key, value, updated_at) VALUES (?, ?, datetime('now'))"),
+    
+    // Activity log
+    logActivity: db.prepare('INSERT INTO activity_log (type, message, details) VALUES (?, ?, ?)')
+  };
 }
 
 // Load tool definitions from existing scripts
@@ -149,40 +180,45 @@ const queries = {
   getToolById: (id) => db.prepare('SELECT * FROM tools WHERE id = ?').get(id),
   getToolByName: (name) => db.prepare('SELECT * FROM tools WHERE name = ?').get(name),
   getInstalledTools: () => db.prepare('SELECT * FROM tools WHERE installed = 1').all(),
-  updateToolStatus: db.prepare('UPDATE tools SET installed = ?, install_date = ? WHERE id = ?'),
+  updateToolStatus: (...args) => statements.updateToolStatus?.run(...args),
   
   // Installations
-  createInstallation: db.prepare('INSERT INTO installations (tool_id, status) VALUES (?, ?)'),
-  updateInstallation: db.prepare('UPDATE installations SET status = ?, completed_at = ?, log = ?, error_message = ? WHERE id = ?'),
+  createInstallation: (...args) => statements.createInstallation?.run(...args),
+  updateInstallation: (...args) => statements.updateInstallation?.run(...args),
   getInstallation: (id) => db.prepare('SELECT * FROM installations WHERE id = ?').get(id),
   getActiveInstallations: () => db.prepare('SELECT * FROM installations WHERE status IN ("pending", "running")').all(),
   
   // Port history
-  recordPort: db.prepare('INSERT OR REPLACE INTO port_history (port, service, process_name, pid, last_seen, active) VALUES (?, ?, ?, ?, datetime("now"), 1)'),
+  recordPort: (...args) => statements.recordPort?.run(...args),
   getActivePorts: () => db.prepare('SELECT * FROM port_history WHERE active = 1').all(),
-  deactivateOldPorts: db.prepare('UPDATE port_history SET active = 0 WHERE last_seen < datetime("now", "-5 minutes")'),
+  deactivateOldPorts: (...args) => statements.deactivateOldPorts?.run(...args),
   
   // Services
-  upsertService: db.prepare('INSERT OR REPLACE INTO services (name, display_name, type, status, last_check) VALUES (?, ?, ?, ?, datetime("now"))'),
+  upsertService: (...args) => statements.upsertService?.run(...args),
   getServices: () => db.prepare('SELECT * FROM services ORDER BY display_name').all(),
   getRunningServices: () => db.prepare('SELECT * FROM services WHERE status = "running"').all(),
   
   // Settings
   getSetting: (key) => db.prepare('SELECT value FROM settings WHERE key = ?').get(key),
-  setSetting: db.prepare('INSERT OR REPLACE INTO settings (key, value, updated_at) VALUES (?, ?, datetime("now"))'),
+  setSetting: (...args) => statements.setSetting?.run(...args),
   
   // Activity log
-  logActivity: db.prepare('INSERT INTO activity_log (type, message, details) VALUES (?, ?, ?)'),
+  logActivity: (...args) => statements.logActivity?.run(...args),
   getRecentActivity: (limit = 50) => db.prepare('SELECT * FROM activity_log ORDER BY created_at DESC LIMIT ?').all(limit),
   
   // Tool sets
   getToolSets: () => db.prepare('SELECT * FROM tool_sets ORDER BY display_name').all(),
-  getToolSet: (name) => db.prepare('SELECT * FROM tool_sets WHERE name = ?').get(name)
+  getToolSet: (name) => db.prepare('SELECT * FROM tool_sets WHERE name = ?').get(name),
+  
+  // Database handle for direct access if needed
+  db
 };
 
 // Activity logging helper
 function logActivity(type, message, details = null) {
-  queries.logActivity.run(type, message, JSON.stringify(details));
+  if (statements.logActivity) {
+    statements.logActivity.run(type, message, JSON.stringify(details));
+  }
 }
 
 module.exports = {

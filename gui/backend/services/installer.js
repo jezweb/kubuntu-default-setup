@@ -12,8 +12,10 @@ async function startInstallation(tools, toolSet = null, progressCallback = null)
   const installationIds = [];
   
   for (const tool of tools) {
-    const result = queries.createInstallation.run(tool.id, INSTALLATION_STATUS.PENDING);
-    installationIds.push(result.lastInsertRowid);
+    const result = queries.createInstallation(tool.id, INSTALLATION_STATUS.PENDING);
+    if (result) {
+      installationIds.push(result.lastInsertRowid);
+    }
   }
   
   // Process installations sequentially
@@ -45,7 +47,7 @@ async function processInstallations(mainId, tools, installationIds, progressCall
     const installationId = installationIds[i];
     
     // Update status to running
-    queries.updateInstallation.run(
+    queries.updateInstallation(
       INSTALLATION_STATUS.RUNNING,
       null,
       null,
@@ -70,8 +72,8 @@ async function processInstallations(mainId, tools, installationIds, progressCall
       
       if (success) {
         // Mark tool as installed
-        queries.updateToolStatus.run(1, new Date().toISOString(), tool.id);
-        queries.updateInstallation.run(
+        queries.updateToolStatus(1, new Date().toISOString(), tool.id);
+        queries.updateInstallation(
           INSTALLATION_STATUS.COMPLETED,
           new Date().toISOString(),
           'Installation completed successfully',
@@ -86,7 +88,7 @@ async function processInstallations(mainId, tools, installationIds, progressCall
     } catch (error) {
       console.error(`Installation error for ${tool.name}:`, error);
       
-      queries.updateInstallation.run(
+      queries.updateInstallation(
         INSTALLATION_STATUS.FAILED,
         new Date().toISOString(),
         null,
@@ -168,7 +170,7 @@ function runInstallScript(scriptPath, tool, installationId, progressCallback, ma
     
     child.on('close', (code) => {
       // Update installation log
-      queries.updateInstallation.run(
+      queries.updateInstallation(
         code === 0 ? INSTALLATION_STATUS.COMPLETED : INSTALLATION_STATUS.FAILED,
         new Date().toISOString(),
         output,
@@ -218,7 +220,7 @@ async function cancelInstallation(installationId) {
   for (const id of installation.installationIds) {
     const inst = queries.getInstallation(id);
     if (inst && inst.status === INSTALLATION_STATUS.PENDING) {
-      queries.updateInstallation.run(
+      queries.updateInstallation(
         INSTALLATION_STATUS.CANCELLED,
         new Date().toISOString(),
         null,

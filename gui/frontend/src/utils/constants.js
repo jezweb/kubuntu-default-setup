@@ -1,6 +1,6 @@
-// Shared constants between frontend and backend
+// Shared constants for frontend (ES modules version)
 
-const INSTALLATION_STATUS = {
+export const INSTALLATION_STATUS = {
   PENDING: 'pending',
   RUNNING: 'running',
   COMPLETED: 'completed',
@@ -8,20 +8,20 @@ const INSTALLATION_STATUS = {
   CANCELLED: 'cancelled'
 };
 
-const SERVICE_TYPES = {
+export const SERVICE_TYPES = {
   DOCKER: 'docker',
   SYSTEMD: 'systemd',
   PROCESS: 'process',
   MCP: 'mcp'
 };
 
-const SERVICE_STATUS = {
+export const SERVICE_STATUS = {
   RUNNING: 'running',
   STOPPED: 'stopped',
   UNKNOWN: 'unknown'
 };
 
-const TOOL_CATEGORIES = {
+export const TOOL_CATEGORIES = {
   SYSTEM: 'System & Build Tools',
   NODEJS: 'Node.js & JavaScript',
   PYTHON: 'Python Tools',
@@ -31,7 +31,7 @@ const TOOL_CATEGORIES = {
   AI: 'AI/ML Tools'
 };
 
-const WEBSOCKET_EVENTS = {
+export const WEBSOCKET_EVENTS = {
   // Client -> Server
   INSTALL_START: 'install:start',
   INSTALL_CANCEL: 'install:cancel',
@@ -49,13 +49,13 @@ const WEBSOCKET_EVENTS = {
   ACTIVITY: 'activity'
 };
 
-const PORT_RANGES = {
+export const PORT_RANGES = {
   SYSTEM: { min: 0, max: 1023, name: 'System Ports' },
   USER: { min: 1024, max: 49151, name: 'User Ports' },
   DYNAMIC: { min: 49152, max: 65535, name: 'Dynamic Ports' }
 };
 
-const API_ENDPOINTS = {
+export const API_ENDPOINTS = {
   // Installation
   INSTALL_TOOL: '/api/install/tool',
   INSTALL_TOOLSET: '/api/install/toolset',
@@ -82,15 +82,4 @@ const API_ENDPOINTS = {
   
   // Activity
   ACTIVITY_LOG: '/api/activity'
-};
-
-// Export for Node.js (CommonJS)
-module.exports = {
-  INSTALLATION_STATUS,
-  SERVICE_TYPES,
-  SERVICE_STATUS,
-  TOOL_CATEGORIES,
-  WEBSOCKET_EVENTS,
-  PORT_RANGES,
-  API_ENDPOINTS
 };
