@@ -126,6 +126,10 @@ category_installation() {
             ;;
         6)
             run_script "$SCRIPT_DIR/scripts/ai-tools/01-ai-tools.sh"
+            # MCP servers have their own dedicated installer
+            if confirm "Would you like to explore MCP server options?" "y"; then
+                run_script "$SCRIPT_DIR/scripts/ai-tools/02-mcp-servers.sh"
+            fi
             ;;
         7)
             return

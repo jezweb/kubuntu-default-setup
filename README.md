@@ -41,10 +41,14 @@ This repository contains automated setup scripts to install and configure all th
 - **Claude Code**: Anthropic's official CLI
 - **Gemini CLI**: Google's AI CLI tool
 - **Ollama**: Run LLMs locally
-- **MCP Servers**: Model Context Protocol servers
-  - `mcp-server-time`: Time and date information server
-  - `mcp-server-filesystem`: File system access server
-  - `mcp-server-git`: Git repository operations server
+- **MCP Servers**: Comprehensive Model Context Protocol server system
+  - **Core**: filesystem, git, time servers
+  - **Productivity**: Notion, Excel, Office Word integration
+  - **Development**: GitHub, Cloudflare, Playwright automation
+  - **Data/Research**: PubMed, Firecrawl, Jina neural search
+  - **Commerce**: Square, Stripe payment processing
+  - **18+ servers available** with interactive installer
+  - **MCP Manager**: Tool to manage and test servers
 - **Vector databases**: Chroma, LanceDB setup scripts
 - **AI CLI tools**: LangChain, Hugging Face CLI, OpenAI tools
 
@@ -77,7 +81,7 @@ Choose specific categories:
 3. Python Ecosystem
 4. Development Tools
 5. Cloud Services
-6. AI Tools
+6. AI Tools (includes comprehensive MCP server installer)
 
 ### Individual Scripts
 Run specific scripts directly:
@@ -93,19 +97,24 @@ Run specific scripts directly:
 
 ```
 kubuntu-default-setup/
-├── install.sh              # Main installer script
+├── install.sh                    # Main installer script
 ├── scripts/
-│   ├── utils.sh           # Shared utility functions
-│   ├── system/            # System essentials
-│   ├── nodejs/            # Node.js ecosystem
+│   ├── utils.sh                 # Shared utility functions
+│   ├── system/                  # System essentials
+│   ├── nodejs/                  # Node.js ecosystem
 │   │   ├── 01-nvm-node.sh
 │   │   ├── 02-package-managers.sh
 │   │   ├── 03-global-tools.sh
 │   │   └── 04-frontend-frameworks.sh
-│   ├── python/            # Python ecosystem
-│   ├── dev-tools/         # Development tools
-│   ├── cloud-services/    # Cloud and database tools
-│   └── ai-tools/          # AI and ML tools
+│   ├── python/                  # Python ecosystem
+│   ├── dev-tools/               # Development tools
+│   ├── cloud-services/          # Cloud and database tools
+│   └── ai-tools/                # AI and ML tools
+│       ├── 01-ai-tools.sh
+│       ├── 02-mcp-servers.sh    # Comprehensive MCP installer
+│       └── mcp-server-manager.sh
+├── docs/
+│   └── MCP_SERVERS.md           # Detailed MCP server guide
 ```
 
 ## Post-Installation
@@ -143,6 +152,7 @@ The installation creates several helper scripts:
 - `~/create-vuetify-project.sh`: Create Vue.js projects with Vuetify 3
 - `~/create-tailwind-project.sh`: Create projects with Tailwind CSS
 - `~/create-mui-project.sh`: Create React projects with Material-UI
+- `mcp-manager`: Manage and test installed MCP servers
 
 ## Customization
 

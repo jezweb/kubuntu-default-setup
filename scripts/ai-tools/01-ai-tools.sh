@@ -101,83 +101,28 @@ lm_studio_info() {
 
 # MCP (Model Context Protocol) Servers
 install_mcp_servers() {
-    log_info "Installing Model Context Protocol (MCP) servers..."
+    log_info "MCP servers have been moved to a dedicated installer..."
     
-    # Create MCP directory
-    MCP_DIR="$HOME/.config/mcp"
-    ensure_dir "$MCP_DIR"
-    
-    # MCP Server Time (already attempted in Python tools with pipx)
-    if ! pipx list | grep -q mcp-server-time; then
-        if confirm "Would you like to install mcp-server-time?" "y"; then
-            log_info "Creating virtual environment for mcp-server-time..."
-            
-            VENV_DIR="$HOME/venvs/mcp-server-time"
-            ensure_dir "$HOME/venvs"
-            
-            python3 -m venv "$VENV_DIR"
-            source "$VENV_DIR/bin/activate"
-            pip install --upgrade pip
-            pip install mcp-server-time
-            deactivate
-            
-            # Create wrapper script
-            cat > "$HOME/.local/bin/mcp-server-time" << EOF
-#!/bin/bash
-source "$VENV_DIR/bin/activate"
-python -m mcp_server_time "\$@"
-EOF
-            chmod +x "$HOME/.local/bin/mcp-server-time"
-            
-            log_success "mcp-server-time installed with wrapper script"
+    # Run the dedicated MCP servers script
+    if confirm "Would you like to install MCP servers?" "y"; then
+        local mcp_script="$SCRIPT_DIR/02-mcp-servers.sh"
+        if [[ -f "$mcp_script" ]]; then
+            log_info "Launching MCP servers installer..."
+            bash "$mcp_script"
+        else
+            log_error "MCP servers script not found at $mcp_script"
         fi
     fi
     
-    # MCP Server Filesystem
-    if confirm "Would you like to install mcp-server-filesystem?" "y"; then
-        log_info "Installing mcp-server-filesystem..."
-        npm install -g @modelcontextprotocol/server-filesystem
-        
-        if npm list -g @modelcontextprotocol/server-filesystem &>/dev/null; then
-            log_success "mcp-server-filesystem installed"
+    # Install MCP manager
+    if confirm "Would you like to install the MCP server manager?" "y"; then
+        local manager_script="$SCRIPT_DIR/mcp-server-manager.sh"
+        if [[ -f "$manager_script" ]]; then
+            # Create symlink for easy access
+            ln -sf "$manager_script" "$HOME/.local/bin/mcp-manager"
+            chmod +x "$HOME/.local/bin/mcp-manager"
+            log_success "MCP server manager installed. Run 'mcp-manager' to manage servers"
         fi
-    fi
-    
-    # MCP Server Git
-    if confirm "Would you like to install mcp-server-git?" "y"; then
-        log_info "Installing mcp-server-git..."
-        npm install -g @modelcontextprotocol/server-git
-        
-        if npm list -g @modelcontextprotocol/server-git &>/dev/null; then
-            log_success "mcp-server-git installed"
-        fi
-    fi
-    
-    # Create MCP configuration template
-    if confirm "Would you like to create an MCP configuration template?" "y"; then
-        cat > "$MCP_DIR/servers.json.template" << 'EOF'
-{
-  "mcpServers": {
-    "filesystem": {
-      "command": "mcp-server-filesystem",
-      "args": ["--path", "/path/to/allowed/directory"],
-      "env": {}
-    },
-    "git": {
-      "command": "mcp-server-git",
-      "args": ["--repo", "/path/to/git/repo"],
-      "env": {}
-    },
-    "time": {
-      "command": "mcp-server-time",
-      "args": [],
-      "env": {}
-    }
-  }
-}
-EOF
-        log_success "MCP configuration template created at $MCP_DIR/servers.json.template"
-        log_info "Copy this to your Claude Code config and adjust paths as needed"
     fi
 }
 
